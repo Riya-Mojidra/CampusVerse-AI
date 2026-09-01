@@ -1,7 +1,7 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import CampusWrapper from '@/three/CampusWrapper';
 import { useCampusStore } from '@/hooks/useCampusStore';
 import { useSearch } from '@/hooks/useSearch';
@@ -17,7 +17,7 @@ import { ShareRouteButton } from '@/components/ui/ShareRouteButton';
 import { MUMBAI_COLLEGES, COLLEGE_LOCATIONS } from '@/data/mumbaiColleges';
 import { FiCpu } from 'react-icons/fi';
 
-export default function CampusPage() {
+function CampusContent() {
     useUrlSync(); // Activates Phase 8 Deep Linking
 
     const [isAiOpen, setIsAiOpen] = useState(false);
@@ -121,5 +121,20 @@ export default function CampusPage() {
             {/* AI Assistant Drawer */}
             <AIAssistantDrawer isOpen={isAiOpen} onClose={() => setIsAiOpen(false)} />
         </div>
+    );
+}
+
+export default function CampusPage() {
+    return (
+        <Suspense fallback={
+            <div className="w-screen h-[calc(100vh-4rem)] flex items-center justify-center bg-[#070B0A] text-emerald-400 font-mono text-sm">
+                <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
+                    <span>Loading CampusVerse 3D Twin...</span>
+                </div>
+            </div>
+        }>
+            <CampusContent />
+        </Suspense>
     );
 }
